@@ -6,9 +6,11 @@
                 <!-- <VCalendar /> -->
                 <VDatePicker v-model="date" expanded :max-date="new Date()" locale="fr" mode="date" @dayclick="changeDate" />
             </div>
-            <div class="border border-gray-500 p-3">
+            <div class="border border-gray-300 p-6">
+
                 <div class="flex justify-end">
-                    <fwb-button color="green" @click="showModal">Commander</fwb-button>
+                    <fwb-button color="alternative" @click="getOrders" class="text-blue-600 border-blue-600 hover:bg-blue-200 hover:text-blue-600 me-3 focus:bg-blue-500 focus:text-white">Prévision du mois</fwb-button>
+                    <fwb-button color="alternative" @click="showModal" class="text-green-600 border-green-600 hover:bg-green-200 hover:text-green-600">Commander</fwb-button>
                 </div>
                 <div v-if="orders.length == 0">
 
@@ -68,6 +70,17 @@
                             </fwb-timeline-content>
                         </fwb-timeline-item>
                     </fwb-timeline>
+                    <div class="" v-if="nombre_plats_total > 0 && montant_total > 0">
+                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+                        <div class="flex justify-between">
+                            <div class="font-bold text-green-500">
+                                {{ nombre_plats_total + ' plats commandé(s)' }}
+                            </div>
+                            <div class="font-bold text-green-500">
+                                {{ 'montant : '+ montant_total + ' fcfa' }}
+                            </div>
+                        </div>
+                    </div>
                     <delete-modal
                         v-if="showModalDelete"
                         v-model="showModalDelete"
@@ -112,7 +125,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue';
+import { computed, getCurrentInstance, onMounted, reactive, ref, watchEffect } from 'vue';
 import {
     FwbButton, FwbAlert, FwbModal, FwbInput, FwbTimeline,
     FwbTimelineBody,
@@ -126,12 +139,14 @@ import Form from 'vform'
 import moment from 'moment';
 import { HasError, AlertError } from 'vform/src/components/tailwind'
 import DeleteModal from '../components/modal/DeleteModal.vue';
-
+const { proxy } = getCurrentInstance()
 const date = ref(new Date())
 const orders = ref([])
 const showModalDelete = ref(false)
 const orderSelect = ref(null)
 const loading = ref(false)
+const nombre_plats_total = ref(0)
+const montant_total = ref(0)
 const form = reactive(new Form({
     id: '',
     meal_name: '',
@@ -166,29 +181,34 @@ function showModal() {
 function saveCommande() {
     if(form.id) {
         form.put('orders/' + form.id).then(({ data }) => {
-            console.log('data', data.data)
             form.clear()
             form.reset()
             closeModal()
+            proxy.$handleMessage('Commande modifiée avec succès', 'success')
             changeDate()
+        }).catch((response) => {
+            proxy.$handleMessage(response.data.message, 'error')
         })
     } else {
         form.post('order').then(({ data }) => {
-        console.log('data', data.data)
         form.clear()
         form.reset()
         closeModal()
+        proxy.$handleMessage('Commande ajoutée avec succès', 'success')
         changeDate()
-    }).catch((error) => {
-        console.log('error', error)
+    }).catch((response) => {
+        proxy.$handleMessage(response.data.message, 'error')
     })
     }
 
 }
 
 const getOrdersDate = () => {
+    nombre_plats_total.value = 0
+    montant_total.value = 0
     axios.get('orders', { params: { selectedDate: date.value } }).then(({ data }) => {
         orders.value = data.data
+
     })
 }
 function openModalDelete(id) {
@@ -201,10 +221,11 @@ function deleteOrder () {
         loading.value = false
         showModalDelete.value = false
         orderSelect.value = null
+        proxy.$handleMessage(response.data.message, 'success')
         changeDate()
-    }).catch((error) => {
+    }).catch((response) => {
         loading.value = false
-        console.log('error', error)
+        proxy.$handleMessage(response.data.message, 'error')
     })
 }
 
@@ -212,6 +233,22 @@ function openModalUpdate(order) {
     form.fill(order)
     form.order_date = (moment(date.value, 'DD/MM/YYYY', true).format()).substring(0, 10)
     isShowModal.value = true
+}
+
+function getOrders() {
+    nombre_plats_total.value = 0
+    montant_total.value = 0
+    axios.get('orders').then(({ data }) => {
+
+        orders.value = data.data
+        orders.value.map((order) => {
+            nombre_plats_total.value = nombre_plats_total.value + order.quantity;
+            montant_total.value += (order.quantity * order.price)
+
+        });
+    }).catch((response) => {
+        proxy.$handleMessage(response.data.message, 'error')
+    })
 }
 
 

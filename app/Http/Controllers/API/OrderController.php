@@ -16,7 +16,10 @@ class OrderController extends Controller
 
             $selectedDate = substr($selectedDate, 0, 10);
             $orders = Order::where('order_date', $selectedDate)->get();
+        } else {
+            $orders = Order::orderBy('order_date')->get();
         }
+
         //$orders = Order::all();
         return OrderResource::collection($orders);
     }

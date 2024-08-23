@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('meal_name');
             $table->dateTime('order_date');
-            $table->string('quantity');
+            $table->integer('quantity');
             $table->integer('price');
             $table->timestamps();
         });
