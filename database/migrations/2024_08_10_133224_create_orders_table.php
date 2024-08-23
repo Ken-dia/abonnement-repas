@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('meal_name');
-            $table->string('order_date');
+            $table->dateTime('order_date');
             $table->string('quantity');
             $table->integer('price');
             $table->timestamps();
