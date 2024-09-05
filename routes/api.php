@@ -12,4 +12,5 @@ Route::get('orders', [OrderController::class, 'index']);
 Route::post('order', [OrderController::class, 'store']);
 Route::delete('orders/{order}', [OrderController::class, 'destroy']);
 Route::put('orders/{order}', [OrderController::class, 'update']);
+Route::get('orders/between', [OrderController::class, 'orderBetweenDates']);
 //Route::get('orders', [OrderController::class, 'selectedDate']);

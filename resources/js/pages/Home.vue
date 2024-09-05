@@ -33,11 +33,10 @@
                             </fwb-timeline-point>
                             <fwb-timeline-content>
                                 <fwb-timeline-time>
-                                    {{ order.order_date_format}}
-
+                                    {{ order.order_date_format }}
                                 </fwb-timeline-time>
                                 <fwb-timeline-title>
-                                    {{ order.quantity +' plats de '+ order.meal_name + ' à ' + order.price + ' fcfa' }}
+                                    {{ order.quantity + ' plats de '+ order.meal_name + ' à ' + order.price + " fcfa l'unité" }}
                                 </fwb-timeline-title>
                                 <fwb-timeline-body>
                                     <div class="flex gap-3 mt-3">
@@ -106,7 +105,7 @@
                 <HasError :form="form" field="order_date" />
                 <fwb-input v-model="form.quantity" placeholder="Entrer le nombre plat" label="Quantité" type="number" />
                 <HasError :form="form" field="quantity" />
-                <fwb-input v-model="form.price" placeholder="Entrer le prix d'un plat" label="Prix" type="number"
+                <fwb-input v-model="form.price" placeholder="Entrer le prix d'un plat" label="Prix Unitaire" type="number"
                  />
                 <HasError :form="form" field="price" />
             </template>
@@ -154,6 +153,10 @@ const form = reactive(new Form({
     price: 2500,
     order_date: (moment(date.value, 'DD/MM/YYYY', true).format()).substring(0, 10),
 }))
+const attr = ref([{
+        dot: 'green',
+    },
+])
 
 const changeDate = () => {
     //form.date_order = (moment(date.value, 'DD/MM/YYYY', true).format()).substring(0, 10)

@@ -5,8 +5,8 @@ import { createApp } from 'vue';
 import Notifications from '@kyvg/vue3-notification'
 import handleShowMsg from '@/handleShowMsg.js'
 import App from '@/App.vue';
-import 'v-calendar/style.css';
 import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
 //in your `main.js` file
 import '../../node_modules/flowbite-vue/dist/index.css'
 const app = createApp(App);
