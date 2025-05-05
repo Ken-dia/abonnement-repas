@@ -7,7 +7,7 @@ import OrderBetween from '../pages/OrderBetween.vue'
 const routes = [
   { path: '/', component: HomeView, name: 'home' },
   { path: '/orders', component: OrderBetween, name:'order_between' },
-  {   path: '/:pathMatch(.*)*',name: "not_found",component: NotFoundView},
+  {  path: '/:pathMatch(.*)*',name: "not_found",component: NotFoundView},
 ]
 
 const router = createRouter({

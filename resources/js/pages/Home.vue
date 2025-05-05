@@ -2,29 +2,28 @@
     <div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto">
             <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Gestion des Commandes</h1>
-            
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Calendrier -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Calendrier</h2>
-                    <VDatePicker 
-                        v-model="date" 
-                        expanded 
-                        :max-date="new Date()" 
-                        locale="fr" 
-                        mode="date" 
+                    <VDatePicker
+                        v-model="date"
+                        expanded
+                        :max-date="new Date()"
+                        locale="fr"
+                        mode="date"
                         @dayclick="changeDate"
-                        class="border-none shadow-none" 
+                        class="border-none shadow-none"
                     />
                 </div>
 
                 <!-- Section Commandes -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                        <h2 class="text-xl font-semibold text-gray-800">Commandes du Jour</h2>
                         <div class="flex gap-4 w-full sm:w-auto">
-                            <fwb-button 
-                                color="blue" 
+                            <fwb-button
+                                color="blue"
                                 @click="getOrders"
                                 class="flex-1 sm:flex-none justify-center"
                             >
@@ -35,8 +34,8 @@
                                 </template>
                                 Prévision du mois
                             </fwb-button>
-                            <fwb-button 
-                                color="green" 
+                            <fwb-button
+                                color="green"
                                 @click="showModal"
                                 class="flex-1 sm:flex-none justify-center"
                             >
@@ -47,6 +46,13 @@
                                 </template>
                                 Commander
                             </fwb-button>
+                            <button type="button" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800" @click="search()">
+                                <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+                                </svg>
+
+                                Recherche Avancée
+                            </button>
                         </div>
                     </div>
 
@@ -157,9 +163,9 @@
             <template #body>
                 <div class="space-y-6">
                     <div class="space-y-2">
-                        <fwb-input 
-                            v-model="form.meal_name" 
-                            placeholder="Ex: Thiéboudienne" 
+                        <fwb-input
+                            v-model="form.meal_name"
+                            placeholder="Ex: Thiéboudienne"
                             label="Nom du plat"
                             class="rounded-lg"
                         />
@@ -167,10 +173,10 @@
                     </div>
 
                     <div class="space-y-2">
-                        <fwb-input 
-                            v-model="form.order_date" 
-                            placeholder="Sélectionner une date" 
-                            label="Date de commande" 
+                        <fwb-input
+                            v-model="form.order_date"
+                            placeholder="Sélectionner une date"
+                            label="Date de commande"
                             type="date"
                             class="rounded-lg"
                         />
@@ -178,10 +184,10 @@
                     </div>
 
                     <div class="space-y-2">
-                        <fwb-input 
-                            v-model="form.quantity" 
-                            placeholder="Ex: 2" 
-                            label="Quantité" 
+                        <fwb-input
+                            v-model="form.quantity"
+                            placeholder="Ex: 2"
+                            label="Quantité"
                             type="number"
                             min="1"
                             class="rounded-lg"
@@ -190,10 +196,10 @@
                     </div>
 
                     <div class="space-y-2">
-                        <fwb-input 
-                            v-model="form.price" 
-                            placeholder="Ex: 2500" 
-                            label="Prix unitaire (FCFA)" 
+                        <fwb-input
+                            v-model="form.price"
+                            placeholder="Ex: 2500"
+                            label="Prix unitaire (FCFA)"
                             type="number"
                             min="0"
                             step="500"
@@ -205,8 +211,8 @@
             </template>
             <template #footer>
                 <div class="flex justify-end gap-4">
-                    <fwb-button 
-                        @click="closeModal" 
+                    <fwb-button
+                        @click="closeModal"
                         color="alternative"
                         class="rounded-lg hover:bg-red-50"
                     >
@@ -217,8 +223,8 @@
                         </template>
                         Annuler
                     </fwb-button>
-                    <fwb-button 
-                        @click="saveCommande" 
+                    <fwb-button
+                        @click="saveCommande"
                         color="green"
                         class="rounded-lg"
                     >
@@ -250,7 +256,9 @@ import Form from 'vform'
 import moment from 'moment';
 import { HasError, AlertError } from 'vform/src/components/tailwind'
 import DeleteModal from '../components/modal/DeleteModal.vue';
+import { useRouter } from 'vue-router'
 const { proxy } = getCurrentInstance()
+const router = useRouter()
 const date = ref(new Date())
 const orders = ref([])
 const showModalDelete = ref(false)
@@ -292,6 +300,10 @@ function closeModal() {
 }
 function showModal() {
     isShowModal.value = true
+}
+
+function search() {
+    router.push({ name: 'order_between' })
 }
 function saveCommande() {
     if(form.id) {
