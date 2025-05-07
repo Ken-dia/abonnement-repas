@@ -49,6 +49,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom du plat</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix Unitaire</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frais Livraison</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                 <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th> -->
                             </tr>
@@ -59,7 +60,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.meal_name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.quantity }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.price }} FCFA</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.quantity * order.price }} FCFA</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.montant_livraison || 0 }} FCFA</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.quantity * order.price + order.montant_livraison }} FCFA</td>
                             </tr>
                         </tbody>
                         <tfoot v-if="nombre_plats_total > 0" class="bg-gray-50">
@@ -118,7 +120,7 @@ const getOrdersBetween = () => {
         orders.value = data.data;
         orders.value.forEach((order) => {
             nombre_plats_total.value += order.quantity;
-            montant_total.value += (order.quantity * order.price);
+            montant_total.value += (order.quantity * order.price) + order.montant_livraison;
         });
         })
         .catch(error => {

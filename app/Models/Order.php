@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory, HasUuids;
-    protected $fillable = ['meal_name', 'quantity', 'price', 'order_date'];
+    protected $fillable = ['meal_name', 'quantity', 'price', 'order_date', 'montant_livraison'];
     protected function casts(): array
     {
         return [

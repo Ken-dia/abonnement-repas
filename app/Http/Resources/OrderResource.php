@@ -22,6 +22,7 @@ class OrderResource extends JsonResource
             'quantity'          => $this->quantity,
             'price'             => $this->price,
             'order_date'        => $this->order_date,
+            'montant_livraison' => $this->montant_livraison,
             'order_date_format' => $this->order_date->translatedFormat('d F Y')
         ];
     }

@@ -77,15 +77,17 @@
                                         <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
                                     </svg>
                                 </fwb-timeline-point>
-                                <fwb-timeline-content class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors duration-200">
-                                    <fwb-timeline-time class="text-sm text-gray-600 mb-1">
+                                <fwb-timeline-content class="bg-blue-50 rounded-lg p-4 hover:bg-blue-100 transition-colors duration-200">
+                                    <fwb-timeline-time class="text-sm text-blue-600 mb-1">
                                         {{ order.order_date_format }}
                                     </fwb-timeline-time>
-                                    <fwb-timeline-title class="text-lg font-medium text-gray-900 mb-2">
+                                    <fwb-timeline-title class="text-lg font-medium text-blue-600 mb-2">
                                         {{ order.quantity + ' plats de '+ order.meal_name }}
                                     </fwb-timeline-title>
                                     <fwb-timeline-body>
                                         <p class="text-gray-600 mb-3">Prix unitaire : {{ order.price }} FCFA</p>
+                                        <p class="text-gray-600 mb-3">Frais de livraison : {{ order.montant_livraison || 0 }} FCFA</p>
+                                        <p class="text-gray-600 mb-3">Total : {{ order.quantity * order.price + order.montant_livraison }} FCFA</p>
                                         <div class="flex gap-3">
                                             <fwb-button
                                                 size="xs"
@@ -202,10 +204,21 @@
                             label="Prix unitaire (FCFA)"
                             type="number"
                             min="0"
-                            step="500"
                             class="rounded-lg"
                         />
                         <HasError :form="form" field="price" class="text-red-600 text-sm" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <fwb-input
+                            v-model="form.montant_livraison"
+                            placeholder="Ex: 1000"
+                            label="Frais de livraison (FCFA)"
+                            type="number"
+                            min="0"
+                            class="rounded-lg"
+                        />
+                        <HasError :form="form" field="montant_livraison" class="text-red-600 text-sm" />
                     </div>
                 </div>
             </template>
@@ -271,6 +284,7 @@ const form = reactive(new Form({
     meal_name: '',
     quantity: 1,
     price: 2500,
+    montant_livraison: 1000,
     order_date: (moment(date.value, 'DD/MM/YYYY', true).format()).substring(0, 10),
 }))
 const attr = ref([{
@@ -370,7 +384,7 @@ function getOrders() {
         orders.value = data.data
         orders.value.map((order) => {
             nombre_plats_total.value = nombre_plats_total.value + order.quantity;
-            montant_total.value += (order.quantity * order.price)
+            montant_total.value += (order.quantity * order.price) + order.montant_livraison
 
         });
     }).catch((response) => {
