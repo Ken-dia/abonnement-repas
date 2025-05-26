@@ -2,6 +2,7 @@ import '@/bootstrap.js';
 //import 'flowbite';
 import router from '@/router/routes.js';
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import Notifications from '@kyvg/vue3-notification'
 import handleShowMsg from '@/handleShowMsg.js'
 import App from '@/App.vue';
@@ -22,6 +23,9 @@ app.config.globalProperties.$handleMessage = function(message, type) {
         });
     }
 }
+const pinia = createPinia()
+
+app.use(pinia)
 app.use(VCalendar, {})
 app.use(Notifications)
 app.use(router);

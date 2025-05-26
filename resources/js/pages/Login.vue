@@ -134,42 +134,34 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Login',
-  data() {
-    return {
-      form: {
-        email: '',
-        password: '',
-        remember: false
-      },
-      loading: false,
-      errors: {}
-    }
-  },
-  methods: {
-    async handleLogin() {
-      this.loading = true
-      this.errors = {}
+<script setup>
+import { ref, computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import { useRouter } from 'vue-router'
 
-      try {
-        // Ici, vous pouvez ajouter votre logique de connexion
-        // Par exemple :
-        // await this.$store.dispatch('auth/login', this.form)
-        // this.$router.push('/dashboard')
+const router = useRouter()
+const authStore = useAuthStore()
 
-        // Simulation d'une requête
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        console.log('Tentative de connexion avec:', this.form)
-      } catch (error) {
-        this.errors = {
-          email: 'Identifiants incorrects',
-          password: 'Identifiants incorrects'
-        }
-      } finally {
-        this.loading = false
-      }
+const form = ref({
+  email: '',
+  password: '',
+  remember: false
+})
+
+const errors = ref({})
+const loading = computed(() => authStore.loading)
+
+async function handleLogin() {
+  errors.value = {}
+
+  try {
+    await authStore.login(form.value)
+    router.push('/')
+  } catch (error) {
+    const errorMessage = error.response?.data?.error || 'Une erreur est survenue'
+    errors.value = {
+      email: errorMessage,
+      password: errorMessage
     }
   }
 }

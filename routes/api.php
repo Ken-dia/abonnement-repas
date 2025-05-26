@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [LoginController::class, 'login']);
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:api');
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api')->group( function () {
     Route::get('orders', [OrderController::class, 'index']);
     Route::post('order', [OrderController::class, 'store']);
     Route::delete('orders/{order}', [OrderController::class, 'destroy']);
